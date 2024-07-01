@@ -12,3 +12,18 @@ export class ContaBancaria{
     )
 }
 
+depositar(valor: number): void {
+   
+  }
+
+  sacar(valor: number): void {
+    
+  }
+
+  verificarSaldo(): number {
+  
+  }
+
+  transferir(destino: ContaBancaria, valor: number): void {
+   
+}
