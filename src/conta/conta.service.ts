@@ -23,12 +23,36 @@ export class ContaBancaria {
       }
     }
   
-    verificarSaldo(): number {
+    verificarSaldo(): number { // sem void, retorna o saldo
       return this.saldo;
     }
   
     transferir(destino: ContaBancaria, valor: number): void {
-      this.sacar(valor);
-      destino.depositar(valor);
+      this.sacar(valor); // primeiro saca e depois transfere pro destino
+      destino.depositar(valor); // destino é um parâmetro do tipo ContaBancaria para transferir
     }
+  }
+
+  export class ContaCorrente extends ContaBancaria { // filha e mãe
+    constructor(
+        saldo: number,
+        clienteId: string,
+        public chequeEspecial: number,
+    ){
+        super ('ContaCorrente', saldo, clienteId);
+    }
+  }
+
+  export class ContaPoupanca extends ContaBancaria{
+    constructor(
+        saldo: number,
+        clienteId: string,
+        public taxaJuros: number,
+    ){
+        super ('ContaPoupanca', saldo, clienteId);
+    }
+  }
+
+  calcularTaxa(): number {
+    return this.saldo * this.taxaJuros;
   }
