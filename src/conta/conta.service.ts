@@ -4,26 +4,31 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class ContaService {}
 
-export class ContaBancaria{
+export class ContaBancaria {
     constructor(
-    public tipo: string,
-    public saldo: number,
-    public clienteId: string,
-    )
-}
-
-depositar(valor: number): void {
-   
-  }
-
-  sacar(valor: number): void {
-    
-  }
-
-  verificarSaldo(): number {
+      public tipo: string,
+      public saldo: number,
+      public clienteId: string,
+    ) {}
   
+    depositar(valor: number): void {
+      this.saldo += valor;
+    }
+  
+    sacar(valor: number): void {
+      if (valor <= this.saldo) {
+        this.saldo -= valor;
+      } else {
+        throw new Error('Saldo insuficiente');
+      }
+    }
+  
+    verificarSaldo(): number {
+      return this.saldo;
+    }
+  
+    transferir(destino: ContaBancaria, valor: number): void {
+      this.sacar(valor);
+      destino.depositar(valor);
+    }
   }
-
-  transferir(destino: ContaBancaria, valor: number): void {
-   
-}
