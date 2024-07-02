@@ -6,4 +6,4 @@ import { ContaController } from './conta.controller';
   providers: [ContaService],
   controllers: [ContaController]
 })
-export class ContaModule {}
+export class ContaModule { }

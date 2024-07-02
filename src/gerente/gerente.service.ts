@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { Cliente } from 'src/cliente/cliente.service';
 import { ContaBancaria, ContaCorrente, ContaPoupanca } from 'src/conta/conta.service';
 
-// criar/definir a classe gerente
 @Injectable()
 export class GerenteService {
     private gerentes: Gerente[] = [];
@@ -32,13 +31,13 @@ export class GerenteService {
     }
 
     abrirConta(gerente: Gerente, cliente: Cliente, tipoConta: string): void {
-        let conta; // vou armazenar uma nova conta aqui
-        if (tipoConta === 'ContaCorrente') { // verificando se a conta é igual a ContaCorrente
-            conta = new ContaCorrente(0, cliente.id, 1000); // se for, cria uma nova instância saldo, id e valor de cheque especial
+        let conta;
+        if (tipoConta === 'ContaCorrente') {
+            conta = new ContaCorrente(0, cliente.id, 1000);
         } else if (tipoConta === 'ContaPoupanca') {
-            conta = new ContaPoupanca(0, cliente.id, 0.05); // se for poupança, saldo, id e taxa de juros
+            conta = new ContaPoupanca(0, cliente.id, 0.05);
         }
-        cliente.contas.push(conta); // adiciona na conta recém criada no array conta
+        cliente.contas.push(conta);
     }
 
     fecharConta(gerente: Gerente, cliente: Cliente, conta: ContaBancaria): void {

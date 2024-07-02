@@ -7,4 +7,4 @@ import { ContaService } from '../conta/conta.service';
   providers: [ClienteService, ContaService],
   controllers: [ClienteController],
 })
-export class ClienteModule {}
+export class ClienteModule { }

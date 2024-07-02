@@ -5,4 +5,4 @@ import { GerenteModule } from './gerente/gerente.module';
 @Module({
   imports: [ClienteModule, GerenteModule],
 })
-export class AppModule {}
+export class AppModule { }

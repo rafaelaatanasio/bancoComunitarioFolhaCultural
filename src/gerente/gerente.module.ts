@@ -9,4 +9,4 @@ import { ContaService } from '../conta/conta.service';
   providers: [GerenteService, ContaService],
   controllers: [GerenteController],
 })
-export class GerenteModule {}
+export class GerenteModule { }
