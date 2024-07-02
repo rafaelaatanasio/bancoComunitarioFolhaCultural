@@ -6,8 +6,9 @@ import { ContaBancaria, ContaCorrente, ContaPoupanca } from 'src/conta/conta.ser
 export class GerenteService {
     private gerentes: Gerente[] = [];
 
-    adicionarGerente(gerente: Gerente): void {
+    adicionarGerente(gerente: Gerente): Gerente {
         this.gerentes.push(gerente);
+        return gerente;
     }
 
     obterGerentePorId(id: string): Gerente {
@@ -54,5 +55,13 @@ export class Gerente {
         public nomeCompleto: string,
         public id: string,
         public clientes: Cliente[] = [],
-    ) { }
+    ) {
+        this.nomeCompleto = nomeCompleto;
+        this.id = uuidv4();
+        this.clientes = clientes;
+    }
+}
+
+function uuidv4(): string {
+    throw new Error('Função não implementada.');
 }
