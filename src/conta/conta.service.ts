@@ -40,6 +40,9 @@ export class ContaBancaria {
         public chequeEspecial: number,
     ){
         super ('ContaCorrente', saldo, clienteId);
+    // chama o construtor da classe ContaBancaria com os parâmetros fornecidos.
+    // A string 'ContaCorrente' é passada como um identificador de tipo de conta
+    // (assumindo que o construtor de ContaBancaria aceita um tipo de conta como primeiro parâmetro).
     }
   }
 
@@ -50,9 +53,9 @@ export class ContaBancaria {
         public taxaJuros: number,
     ){
         super ('ContaPoupanca', saldo, clienteId);
-    }
   }
 
   calcularTaxa(): number {
     return this.saldo * this.taxaJuros;
   }
+}
