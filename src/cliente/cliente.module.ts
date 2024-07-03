@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ClienteService } from './cliente.service';
 import { ClienteController } from './cliente.controller';
+import { ContaService } from '../conta/conta.service';
 
 @Module({
-  providers: [ClienteService],
+  providers: [ClienteService, ContaService],
   controllers: [ClienteController],
-  exports: [ClienteService],
 })
 export class ClienteModule { }
