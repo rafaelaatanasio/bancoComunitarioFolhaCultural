@@ -1,3 +1,4 @@
+// src/modules/contas/contas.service.ts
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { Conta } from '../../classes/conta';
 import { ContaCorrente } from '../../classes/contaCorrente';
@@ -15,9 +16,9 @@ export class ContasService {
         let conta: Conta;
         if (tipo === 'corrente') {
             if (cliente.rendaSalarial < 500) throw new BadRequestException('Renda insuficiente para abrir conta corrente');
-            conta = new ContaCorrente(this.gerarNumeroConta(), cliente);
+            conta = new ContaCorrente(clienteId, cliente);
         } else {
-            conta = new ContaPoupanca(this.gerarNumeroConta(), cliente);
+            conta = new ContaPoupanca(clienteId, cliente);
         }
 
         cliente.contas.push(conta);
@@ -38,19 +39,16 @@ export class ContasService {
 
     transferir(clienteIdOrigem: number, contaNumeroOrigem: number, clienteIdDestino: number, contaNumeroDestino: number, valor: number): void {
         const contaOrigem = this.buscarConta(clienteIdOrigem, contaNumeroOrigem);
-        if (!contaOrigem) throw new BadRequestException('Conta de origem não encontrada');
         const contaDestino = this.buscarConta(clienteIdDestino, contaNumeroDestino);
-        if (!contaDestino) throw new BadRequestException('Conta de destino não encontrada');
+        if (!contaOrigem || !contaDestino) throw new BadRequestException('Conta não encontrada');
         contaOrigem.transferir(valor, contaDestino);
     }
 
-    private buscarConta(clienteId: number, contaNumero: number): Conta {
+    buscarConta(clienteId: number, contaNumero: number): Conta {
         const cliente = this.clientesService.buscarClientePorId(clienteId);
         if (!cliente) throw new BadRequestException('Cliente não encontrado');
-        return cliente.contas.find(conta => conta.numero === contaNumero);
-    }
-
-    private gerarNumeroConta(): number {
-        return Math.floor(Math.random() * 1000000);
+        const conta = cliente.contas.find(conta => conta.numero === contaNumero);
+        if (!conta) throw new BadRequestException('Conta não encontrada');
+        return conta;
     }
 }
