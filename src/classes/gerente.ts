@@ -1,7 +1,7 @@
 import { Cliente } from "./cliente";
 import { Conta } from "./conta";
-import { ContaCorrente } from "./contaCorrente";
-import { ContaPoupanca } from "./contaPoupanca";
+import { ContaCorrente } from "../models/contaCorrente.model";
+import { ContaPoupanca } from "../models/contaPoupanca.model";
 
 export class Gerente {
     constructor(

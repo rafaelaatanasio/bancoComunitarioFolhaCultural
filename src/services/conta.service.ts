@@ -1,8 +1,8 @@
 // src/modules/contas/contas.service.ts
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { Conta } from '../classes/conta';
-import { ContaCorrente } from '../classes/contaCorrente';
-import { ContaPoupanca } from '../classes/contaPoupanca';
+import { ContaCorrente } from '../models/contaCorrente.model';
+import { ContaPoupanca } from '../models/contaPoupanca.model';
 import { ClientesService } from '../cliente/cliente.service';
 
 @Injectable()
