@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Param, Delete, Get } from '@nestjs/common';
-import { ClientesService } from './cliente.service';
-import { Cliente } from '../../classes/cliente';
+import { ClientesService } from '../module/cliente/cliente.service';
+import { Cliente } from '../classes/cliente';
 
 @Controller('clientes')
 export class ClientesController {
