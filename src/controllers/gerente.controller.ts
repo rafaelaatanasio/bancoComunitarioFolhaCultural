@@ -1,5 +1,5 @@
 import { Controller, Post, Body, Param, Delete, Patch } from '@nestjs/common';
-import { GerentesService } from '../module/gerente/gerente.service';
+import { GerentesService } from '../services/gerente.service';
 import { Gerente } from '../classes/gerente';
 import { Cliente } from '../classes/cliente';
 import { Conta } from '../classes/conta';
