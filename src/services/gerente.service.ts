@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Gerente } from '../classes/gerente';
-import { Cliente } from '../classes/cliente';
-import { Conta } from '../classes/conta';
+import { Gerente } from 'src/modules/gerente.module';
+import { Cliente } from 'src/modules/cliente.module';
+import { Conta } from 'src/modules/conta.module';
 
 @Injectable()
 export class GerentesService {

@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Param } from '@nestjs/common';
 import { ContasService } from '../services/conta.service';
 import { PagamentoService } from '../services/pagamento.service';
-import { Conta } from '../module/conta.module';
+import { Conta } from '../modules/conta.module';
 
 @Controller('contas')
 export class ContasController {

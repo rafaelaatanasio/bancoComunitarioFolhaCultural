@@ -9,12 +9,10 @@ export class ContaCorrente extends Conta {
         this.limiteChequeEspecial = limiteChequeEspecial;
     }
 
-    // Método público para acessar o limiteChequeEspecial
     getLimiteChequeEspecial(): number {
         return this.limiteChequeEspecial;
     }
 
-    // Método público para modificar o limiteChequeEspecial
     setLimiteChequeEspecial(limite: number): void {
         this.limiteChequeEspecial = limite;
     }

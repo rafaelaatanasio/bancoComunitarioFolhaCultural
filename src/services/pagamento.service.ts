@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { ContasService } from './conta.service';
-import { ContaCorrente } from 'src/module/contaCorrente.module'; 
+import { ContaCorrente } from 'src/modules/contaCorrente.module'; 
 
 @Injectable()
 export class PagamentoService {
@@ -15,7 +15,7 @@ export class PagamentoService {
 
         let limiteChequeEspecial = 0;
         if (conta instanceof ContaCorrente) {
-            limiteChequeEspecial = conta.getLimiteChequeEspecial(); // Usando o método getLimiteChequeEspecial
+            limiteChequeEspecial = conta.getLimiteChequeEspecial();
         }
 
         if (conta.consultarSaldo() + limiteChequeEspecial < valor) {
@@ -32,7 +32,7 @@ export class PagamentoService {
 
         let limiteChequeEspecial = 0;
         if (conta instanceof ContaCorrente) {
-            limiteChequeEspecial = conta.getLimiteChequeEspecial(); // Usando o método getLimiteChequeEspecial
+            limiteChequeEspecial = conta.getLimiteChequeEspecial();
         }
 
         if (conta.consultarSaldo() + limiteChequeEspecial < valor) {
