@@ -1,9 +1,8 @@
-// src/modules/contas/contas.service.ts
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { Conta } from '../classes/conta';
-import { ContaCorrente } from '../models/contaCorrente.model';
-import { ContaPoupanca } from '../models/contaPoupanca.model';
-import { ClientesService } from '../cliente/cliente.service';
+import { Conta } from '../module/conta.module';
+import { ContaCorrente } from '../module/contaCorrente.module';
+import { ContaPoupanca } from '../module/contaPoupanca.module';
+import { ClientesService } from './cliente.service';
 
 @Injectable()
 export class ContasService {
@@ -27,28 +26,27 @@ export class ContasService {
 
     depositar(clienteId: number, contaNumero: number, valor: number): void {
         const conta = this.buscarConta(clienteId, contaNumero);
-        if (!conta) throw new BadRequestException('Conta não encontrada');
         conta.depositar(valor);
     }
 
     sacar(clienteId: number, contaNumero: number, valor: number): void {
         const conta = this.buscarConta(clienteId, contaNumero);
-        if (!conta) throw new BadRequestException('Conta não encontrada');
         conta.sacar(valor);
     }
 
-    transferir(clienteIdOrigem: number, contaNumeroOrigem: number, clienteIdDestino: number, contaNumeroDestino: number, valor: number): void {
-        const contaOrigem = this.buscarConta(clienteIdOrigem, contaNumeroOrigem);
-        const contaDestino = this.buscarConta(clienteIdDestino, contaNumeroDestino);
-        if (!contaOrigem || !contaDestino) throw new BadRequestException('Conta não encontrada');
-        contaOrigem.transferir(valor, contaDestino);
+    transferir(clienteId: number, contaNumero: number, valor: number, contaDestinoId: number, contaDestinoNumero: number): void {
+        const conta = this.buscarConta(clienteId, contaNumero);
+        const contaDestino = this.buscarConta(contaDestinoId, contaDestinoNumero);
+        conta.transferir(valor, contaDestino);
     }
 
     buscarConta(clienteId: number, contaNumero: number): Conta {
         const cliente = this.clientesService.buscarClientePorId(clienteId);
         if (!cliente) throw new BadRequestException('Cliente não encontrado');
+
         const conta = cliente.contas.find(conta => conta.numero === contaNumero);
         if (!conta) throw new BadRequestException('Conta não encontrada');
+
         return conta;
     }
 }

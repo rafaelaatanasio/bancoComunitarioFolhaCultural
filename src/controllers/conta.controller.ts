@@ -1,10 +1,14 @@
-import { Controller, Post, Body, Param, Get, BadRequestException } from '@nestjs/common';
-import { ContasService } from './conta.service';
-import { Conta } from '../../classes/conta';
+import { Controller, Post, Body, Param } from '@nestjs/common';
+import { ContasService } from '../services/conta.service';
+import { PagamentoService } from '../services/pagamento.service';
+import { Conta } from '../module/conta.module';
 
 @Controller('contas')
 export class ContasController {
-    constructor(private readonly contasService: ContasService) { }
+    constructor(
+        private readonly contasService: ContasService,
+        private readonly pagamentoService: PagamentoService
+    ) { }
 
     @Post()
     criarConta(
@@ -34,22 +38,21 @@ export class ContasController {
 
     @Post('transferir')
     transferir(
-        @Body('clienteIdOrigem') clienteIdOrigem: number,
-        @Body('contaNumeroOrigem') contaNumeroOrigem: number,
-        @Body('clienteIdDestino') clienteIdDestino: number,
-        @Body('contaNumeroDestino') contaNumeroDestino: number,
-        @Body('valor') valor: number
+        @Body('clienteId') clienteId: number,
+        @Body('contaNumero') contaNumero: number,
+        @Body('valor') valor: number,
+        @Body('contaDestinoId') contaDestinoId: number,
+        @Body('contaDestinoNumero') contaDestinoNumero: number
     ): void {
-        this.contasService.transferir(clienteIdOrigem, contaNumeroOrigem, clienteIdDestino, contaNumeroDestino, valor);
+        this.contasService.transferir(clienteId, contaNumero, valor, contaDestinoId, contaDestinoNumero);
     }
 
-    @Get(':clienteId/:contaNumero/saldo')
-    consultarSaldo(
-        @Param('clienteId') clienteId: number,
-        @Param('contaNumero') contaNumero: number
-    ): number {
-        const conta = this.contasService.buscarConta(clienteId, contaNumero);
-        if (!conta) throw new BadRequestException('Conta não encontrada');
-        return conta.consultarSaldo();
+    @Post('pagar')
+    pagar(
+        @Body('clienteId') clienteId: number,
+        @Body('contaNumero') contaNumero: number,
+        @Body('valor') valor: number
+    ): void {
+        this.pagamentoService.realizarPagamento(clienteId, contaNumero, valor);
     }
 }

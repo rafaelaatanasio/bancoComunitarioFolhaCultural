@@ -1,3 +1,5 @@
+import { Cliente } from "./cliente.module";
+
 export abstract class Conta {
   protected saldo: number = 0;
 
