@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Gerente } from 'src/modules/gerente.module';
 import { Cliente } from 'src/modules/cliente.module';
-import { Conta } from 'src/modules/conta.module';
+import { ConcreteContaFactory, Conta, ContaFactory, TipoConta } from 'src/modules/conta.module';
 
 @Injectable()
 export class GerentesService {
@@ -23,9 +23,12 @@ export class GerentesService {
         gerente e lançar uma exceção se o cliente não for encontrado. */
         const gerente = this.buscarGerentePorId(gerenteId);
         const cliente = gerente.clientes.find(cliente => cliente.id === clienteId);
-        if (!cliente) throw new Error('Cliente não encontrado');
+        if (!cliente) throw new BadRequestException('Cliente não encontrado');
         return cliente;
     }
+
+    // Usar BadRequestException ao invés de Error proporciona um erro mais informativo e específico
+    // dentro do contexto do NestJS
 
     adicionarCliente(gerenteId: number, cliente: Cliente): void {
         const gerente = this.buscarGerentePorId(gerenteId);
@@ -38,11 +41,14 @@ export class GerentesService {
         gerente.removerCliente(clienteId);
     }
 
-    abrirConta(gerenteId: number, tipo: 'corrente' | 'poupanca', clienteId: number): Conta {
+    abrirConta(gerenteId: number, tipo: TipoConta, clienteId: number): Conta {
         const cliente = this.buscarCliente(gerenteId, clienteId);
         const gerente = this.buscarGerentePorId(gerenteId);
-        return gerente.abrirConta(tipo, cliente);
-    }
+        const factory = new ConcreteContaFactory();  // Criando uma instância da factory
+        const novaConta = factory.criarConta(tipo, cliente);  // Criando a conta usando a factory
+        cliente.contas.push(novaConta);
+        return novaConta;
+      }
 
     fecharConta(gerenteId: number, clienteId: number, contaNumero: number): void {
         const cliente = this.buscarCliente(gerenteId, clienteId);
@@ -50,7 +56,7 @@ export class GerentesService {
         gerente.fecharConta(cliente, contaNumero);
     }
 
-    modificarTipoConta(gerenteId: number, clienteId: number, contaNumero: number, novoTipo: 'corrente' | 'poupanca'): Conta {
+    modificarTipoConta(gerenteId: number, clienteId: number, contaNumero: number, novoTipo: TipoConta): Conta {
         const cliente = this.buscarCliente(gerenteId, clienteId);
         const gerente = this.buscarGerentePorId(gerenteId);
         return gerente.modificarTipoConta(cliente, contaNumero, novoTipo);

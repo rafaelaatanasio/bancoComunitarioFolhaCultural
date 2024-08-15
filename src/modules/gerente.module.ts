@@ -9,7 +9,6 @@ import { ContaPoupanca } from "./contaPoupanca.module";
 // Isso segue o princípio da separação de responsabilidades, concentrando a lógica
 // de negócio em um único local e não no module.
 
-
 export class Gerente {
     constructor(
         public nome: string,

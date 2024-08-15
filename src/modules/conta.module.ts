@@ -1,4 +1,7 @@
+import { BadRequestException } from "@nestjs/common";
 import { Cliente } from "./cliente.module";
+import { ContaCorrente } from "./contaCorrente.module";
+import { ContaPoupanca } from "./contaPoupanca.module";
 
 export abstract class Conta {
   protected saldo: number = 0;
@@ -36,3 +39,29 @@ export abstract class Conta {
       return this.saldo;
   }
 }
+
+export enum TipoConta {
+    Corrente = 'corrente',
+    Poupanca = 'poupanca',
+}
+
+// Interface da Factory
+export abstract class ContaFactory {
+    abstract criarConta(tipo: TipoConta, cliente: Cliente): Conta;
+  }
+
+// Implementação concreta da Factory
+// Toda a lógica de criação de contas é centralizada na ConcreteContaFactory.
+
+export class ConcreteContaFactory extends ContaFactory {
+    criarConta(tipo: TipoConta, cliente: Cliente): Conta {
+      switch (tipo) {
+        case TipoConta.Corrente:
+          return new ContaCorrente(cliente.id, cliente);
+        case TipoConta.Poupanca:
+          return new ContaPoupanca(cliente.id, cliente);
+        default:
+          throw new Error('Tipo de conta não suportado.');
+      }
+    }
+  }
