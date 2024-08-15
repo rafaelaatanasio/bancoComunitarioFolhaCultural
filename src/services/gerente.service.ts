@@ -18,17 +18,11 @@ export class GerentesService {
     }
 
     private buscarCliente(gerenteId: number, clienteId: number): Cliente {
-        /* refatorei para não utilizar tantos 'if's'
-        encapsula a lógica de buscar um cliente específico associado a um
-        gerente e lançar uma exceção se o cliente não for encontrado. */
         const gerente = this.buscarGerentePorId(gerenteId);
         const cliente = gerente.clientes.find(cliente => cliente.id === clienteId);
         if (!cliente) throw new BadRequestException('Cliente não encontrado');
         return cliente;
     }
-
-    // Usar BadRequestException ao invés de Error proporciona um erro mais informativo e específico
-    // dentro do contexto do NestJS
 
     adicionarCliente(gerenteId: number, cliente: Cliente): void {
         const gerente = this.buscarGerentePorId(gerenteId);
@@ -44,8 +38,8 @@ export class GerentesService {
     abrirConta(gerenteId: number, tipo: TipoConta, clienteId: number): Conta {
         const cliente = this.buscarCliente(gerenteId, clienteId);
         const gerente = this.buscarGerentePorId(gerenteId);
-        const factory = new ConcreteContaFactory();  // Criando uma instância da factory
-        const novaConta = factory.criarConta(tipo, cliente);  // Criando a conta usando a factory
+        const factory = new ConcreteContaFactory(); 
+        const novaConta = factory.criarConta(tipo, cliente);
         cliente.contas.push(novaConta);
         return novaConta;
       }
@@ -62,7 +56,3 @@ export class GerentesService {
         return gerente.modificarTipoConta(cliente, contaNumero, novoTipo);
     }
 }
-
-//Refatoração em sugestão da prof
-// removerCliente, abrirConta, fecharConta e modificarTipoConta utilizam o método buscarCliente
-//para evitar a duplicação de código.

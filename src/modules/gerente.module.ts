@@ -3,12 +3,6 @@ import { Conta } from "./conta.module";
 import { ContaCorrente } from "./contaCorrente.module";
 import { ContaPoupanca } from "./contaPoupanca.module";
 
-
-// Movimento da lógica para o gerente.service.ts: A lógica de gerente atualmente
-// presente no module.ts deve ser movida para o arquivo gerente.service.ts.
-// Isso segue o princípio da separação de responsabilidades, concentrando a lógica
-// de negócio em um único local e não no module.
-
 export class Gerente {
     constructor(
         public nome: string,

@@ -45,13 +45,9 @@ export enum TipoConta {
     Poupanca = 'poupanca',
 }
 
-// Interface da Factory
 export abstract class ContaFactory {
     abstract criarConta(tipo: TipoConta, cliente: Cliente): Conta;
   }
-
-// Implementação concreta da Factory
-// Toda a lógica de criação de contas é centralizada na ConcreteContaFactory.
 
 export class ConcreteContaFactory extends ContaFactory {
     criarConta(tipo: TipoConta, cliente: Cliente): Conta {
