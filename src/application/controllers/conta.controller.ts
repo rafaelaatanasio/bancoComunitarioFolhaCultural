@@ -2,7 +2,7 @@ import { Controller, Post, Body, Param } from '@nestjs/common';
 import { ContasService } from '../../domain/services/conta.service';
 import { PagamentoService } from '../../domain/services/pagamento.service';
 import { Conta } from 'src/domain/entities/conta.entity';
-import { CreateContaDto } from '../dtos/account/create-conta.dto'; 
+import { CreateContaDto } from '../dtos/account/create-conta.dto';
 import { DepositarDto } from '../dtos/account/depositar.dto';
 import { SacarDto } from '../dtos/account/sacar.dto';
 import { TransferirDto } from '../dtos/account/transferir.dto';
@@ -13,7 +13,7 @@ export class ContasController {
   constructor(
     private readonly contasService: ContasService,
     private readonly pagamentoService: PagamentoService
-  ) {}
+  ) { }
 
   @Post()
   criarConta(@Body() createContaDto: CreateContaDto): Conta {

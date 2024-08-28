@@ -2,12 +2,12 @@ import { Controller, Post, Body, Param, Delete, Patch } from '@nestjs/common';
 import { GerentesService } from '../../domain/services/gerente.service';
 import { Gerente } from 'src/domain/entities/gerente.entity';
 import { Conta } from 'src/domain/entities/conta.entity';
-import { GerenteDto } from '../dtos/gerente.dto'; 
+import { GerenteDto } from '../dtos/gerente.dto';
 import { Cliente } from 'src/domain/entities/cliente.entity';
 
 @Controller('gerentes')
 export class GerentesController {
-  constructor(private readonly gerentesService: GerentesService) {}
+  constructor(private readonly gerentesService: GerentesService) { }
 
   @Post()
   criarGerente(@Body() gerenteDto: GerenteDto): Gerente {

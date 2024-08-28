@@ -1,11 +1,11 @@
 import { Controller, Post, Body, Param, Delete, Get } from '@nestjs/common';
 import { ClientesService } from 'src/domain/services/cliente.service';
 import { Cliente } from 'src/domain/entities/cliente.entity';
-import { CreateClienteDto } from '../dtos/create-client.dto'; 
+import { CreateClienteDto } from '../dtos/create-client.dto';
 
 @Controller('clientes')
 export class ClientesController {
-  constructor(private readonly clientesService: ClientesService) {}
+  constructor(private readonly clientesService: ClientesService) { }
 
   @Post()
   criarCliente(@Body() createClienteDto: CreateClienteDto): Cliente {

@@ -1,13 +1,13 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { ContasService } from './conta.service';
-import { ContaCorrente } from 'src/domain/entities/contaCorrente.entity'; 
+import { ContaCorrente } from 'src/domain/entities/contaCorrente.entity';
 
 @Injectable()
 export class PagamentoService {
     realizarPagamento(clienteId: number, contaNumero: number, valor: number) {
         throw new Error('Method not implemented.');
     }
-    constructor(private readonly contasService: ContasService) {}
+    constructor(private readonly contasService: ContasService) { }
 
     pagarPorPIX(clienteId: number, contaNumero: number, valor: number, chavePIX: string): void {
         const conta = this.contasService.buscarConta(clienteId, contaNumero);

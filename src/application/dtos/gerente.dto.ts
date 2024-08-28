@@ -1,12 +1,9 @@
-// src/dto/gerente.dto.ts
-
 import { IsString, IsNumber, IsEnum, IsOptional, ValidateNested, IsArray } from 'class-validator';
 import { Type } from 'class-transformer';
 import { TipoConta } from 'src/domain/enums/tipoConta.enum';
 import { Conta } from 'src/domain/entities/conta.entity';
 
 export class GerenteDto {
-  // Propriedades para criar Gerente
   @IsString()
   @IsOptional()
   nome?: string;
@@ -15,7 +12,6 @@ export class GerenteDto {
   @IsOptional()
   id?: number;
 
-  // Propriedades para adicionar Cliente
   @IsNumber()
   @IsOptional()
   clienteId?: number;
@@ -42,7 +38,6 @@ export class GerenteDto {
   @IsOptional()
   contas?: Conta[] = [];
 
-  // Propriedades para abrir e modificar conta
   @IsEnum(TipoConta)
   @IsOptional()
   tipo?: TipoConta;

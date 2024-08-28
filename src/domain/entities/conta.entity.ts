@@ -10,7 +10,7 @@ export abstract class Conta implements NovaConta {
   constructor(
     public numero: number,
     public cliente: Cliente
-  ) {}
+  ) { }
 
   consultarSaldo(): number {
     return this.saldo;
