@@ -1,13 +1,10 @@
-import { Conta } from "./conta.module";
+import { Module } from '@nestjs/common';
+import { ClientesService } from 'src/domain/services/cliente.service'; 
+import { ClientesController } from 'src/application/controllers/cliente.controller';
 
-export class Cliente {
-  public contas: Conta[] = [];
-
-  constructor(
-      public nome: string,
-      public id: number,
-      public endereco: string,
-      public telefone: string,
-      public rendaSalarial: number
-  ) {}
-}
+@Module({
+  providers: [ClientesService],
+  controllers: [ClientesController],
+  exports: [ClientesService],
+})
+export class ClienteModule {}

@@ -1,7 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Gerente } from 'src/modules/gerente.module';
-import { Cliente } from 'src/modules/cliente.module';
-import { ConcreteContaFactory, Conta, ContaFactory, TipoConta } from 'src/modules/conta.module';
+import { Gerente } from 'src/domain/entities/gerente.entity';
+import { Cliente } from 'src/domain/entities/cliente.entity';
+import { ConcreteContaFactory, Conta} from 'src/domain/entities/conta.entity';
+import { TipoConta } from 'src/domain/enums/tipoConta.enum';
 
 @Injectable()
 export class GerentesService {
@@ -37,12 +38,15 @@ export class GerentesService {
 
     abrirConta(gerenteId: number, tipo: TipoConta, clienteId: number): Conta {
         const cliente = this.buscarCliente(gerenteId, clienteId);
-        const gerente = this.buscarGerentePorId(gerenteId);
         const factory = new ConcreteContaFactory(); 
         const novaConta = factory.criarConta(tipo, cliente);
+        // Verificação de tipo, para garantir que é uma instância de Conta
+        if (!(novaConta instanceof Conta)) {
+            throw new Error('Erro: O objeto criado não é uma instância de Conta.');
+        }
         cliente.contas.push(novaConta);
         return novaConta;
-      }
+    }
 
     fecharConta(gerenteId: number, clienteId: number, contaNumero: number): void {
         const cliente = this.buscarCliente(gerenteId, clienteId);

@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { Conta } from '../modules/conta.module';
-import { ContaCorrente } from '../modules/contaCorrente.module';
-import { ContaPoupanca } from '../modules/contaPoupanca.module';
+import { Conta } from 'src/domain/entities/conta.entity';
+import { ContaCorrente } from 'src/domain/entities/conta.entity';
+import { ContaPoupanca } from 'src/domain/entities/conta.entity';
 import { ClientesService } from './cliente.service';
 
 @Injectable()

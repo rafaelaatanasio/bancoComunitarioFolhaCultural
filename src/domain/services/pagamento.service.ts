@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { ContasService } from './conta.service';
-import { ContaCorrente } from 'src/modules/contaCorrente.module'; 
+import { ContaCorrente } from 'src/domain/entities/contaCorrente.entity'; 
 
 @Injectable()
 export class PagamentoService {
