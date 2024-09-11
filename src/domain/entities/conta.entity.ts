@@ -6,11 +6,16 @@ import { NovaConta } from "src/domain/interfaces/novaConta.interface";
 
 export abstract class Conta implements NovaConta {
   protected saldo: number = 0;
+  public numero: number;
+  public cliente: Cliente
 
   constructor(
-    public numero: number,
-    public cliente: Cliente
-  ) { }
+    numero: number,
+    cliente: Cliente
+  ) {
+    this.numero = numero;
+    this.cliente = cliente
+  }
 
   consultarSaldo(): number {
     return this.saldo;
