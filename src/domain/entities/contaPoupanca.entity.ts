@@ -1,4 +1,4 @@
 import { Conta } from './conta.entity';
-import { NovaConta } from 'src/domain/interfaces/novaConta.interface';
+import { Cliente } from './cliente.entity';
 
-export class ContaPoupanca extends Conta implements NovaConta { }
+export class ContaPoupanca extends Conta {}

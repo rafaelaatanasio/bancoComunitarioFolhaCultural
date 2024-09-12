@@ -1,20 +1,28 @@
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
 import { Cliente } from "./cliente.entity";
-import { ContaCorrente } from "./contaCorrente.entity";
-import { ContaPoupanca } from "./contaPoupanca.entity";
-import { TipoConta } from 'src/domain/enums/tipoConta.enum';
-import { NovaConta } from "src/domain/interfaces/novaConta.interface";
+import { NovaConta } from 'src/domain/interfaces/novaConta.interface';
 
+@Entity('contas')
 export abstract class Conta implements NovaConta {
-  protected saldo: number = 0;
+  @PrimaryGeneratedColumn('uuid')
+  public id: string; // UUID como string
+
+  @Column()
   public numero: number;
-  public cliente: Cliente
+
+  @Column('decimal', { default: 0 })
+  protected saldo: number; // Inicializado como 0
+
+  @ManyToOne(() => Cliente, cliente => cliente.contas)
+  public cliente: Cliente;
 
   constructor(
     numero: number,
     cliente: Cliente
   ) {
     this.numero = numero;
-    this.cliente = cliente
+    this.cliente = cliente;
+    this.saldo = 0; // Inicializar o saldo como 0
   }
 
   consultarSaldo(): number {
@@ -53,22 +61,3 @@ export abstract class Conta implements NovaConta {
     return this.saldo;
   }
 }
-
-export abstract class ContaFactory {
-  abstract criarConta(tipo: TipoConta, cliente: Cliente): NovaConta;
-}
-
-export class ConcreteContaFactory extends ContaFactory {
-  criarConta(tipo: TipoConta, cliente: Cliente): NovaConta {
-    switch (tipo) {
-      case TipoConta.Corrente:
-        return new ContaCorrente(cliente.id, cliente);
-      case TipoConta.Poupanca:
-        return new ContaPoupanca(cliente.id, cliente);
-      default:
-        throw new Error('Tipo de conta não suportado.');
-    }
-  }
-}
-export { ContaCorrente, ContaPoupanca };
-

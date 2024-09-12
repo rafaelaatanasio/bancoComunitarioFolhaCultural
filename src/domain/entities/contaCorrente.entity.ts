@@ -1,8 +1,7 @@
-import { Cliente } from './cliente.entity';
 import { Conta } from './conta.entity';
-import { NovaConta } from 'src/domain/interfaces/novaConta.interface';
+import { Cliente } from './cliente.entity';
 
-export class ContaCorrente extends Conta implements NovaConta {
+export class ContaCorrente extends Conta {
   private limiteChequeEspecial: number;
 
   constructor(numero: number, cliente: Cliente, limiteChequeEspecial: number = 0) {

@@ -1,29 +1,30 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
 import { Conta } from "./conta.entity";
 
-@Entity('clientes') // posso modificar o nome
+@Entity('clientes')
 export class Cliente {
   @PrimaryGeneratedColumn('uuid')
-  public id: number;
-  
-  @Column({ unique: true }) // mapeando as colunas
-  public contas: Conta[] = []; // cada atributo vai virar uma coluna na tabela cliente
+  public id: string; // UUID como string
 
   @Column()
   public nome: string;
 
-  @Column({ unique: true }) // configuração de único
+  @Column({ unique: true })
   public endereco: string;
 
-  @Column({ unique: true }) // configuração de único
-  public telefone: string;
+  @Column({ unique: true })
+  public telefone: string; // Deve ser string
 
   @Column()
-  public rendaSalarial: number
+  public rendaSalarial: number;
+
+  @OneToMany(() => Conta, conta => conta.cliente)
+  public contas: Conta[];
+    gerente: any;
 
   constructor(
     nome: string,
-    id: number,
+    id: string,
     endereco: string,
     telefone: string,
     rendaSalarial: number
@@ -32,6 +33,6 @@ export class Cliente {
     this.id = id;
     this.endereco = endereco;
     this.telefone = telefone;
-    this.rendaSalarial = rendaSalarial
+    this.rendaSalarial = rendaSalarial;
   }
 }
