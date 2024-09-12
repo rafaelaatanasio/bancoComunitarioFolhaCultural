@@ -1,11 +1,24 @@
+import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 import { Conta } from "./conta.entity";
 
+@Entity('clientes') // posso modificar o nome
 export class Cliente {
-  public contas: Conta[] = [];
-  public nome: string;
+  @PrimaryGeneratedColumn('uuid')
   public id: number;
+  
+  @Column({ unique: true }) // mapeando as colunas
+  public contas: Conta[] = []; // cada atributo vai virar uma coluna na tabela cliente
+
+  @Column()
+  public nome: string;
+
+  @Column({ unique: true }) // configuração de único
   public endereco: string;
+
+  @Column({ unique: true }) // configuração de único
   public telefone: string;
+
+  @Column()
   public rendaSalarial: number
 
   constructor(
