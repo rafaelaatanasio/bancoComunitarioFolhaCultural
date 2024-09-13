@@ -1,52 +1,67 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { Conta } from 'src/domain/entities/conta.entity';
-import { ContaCorrente } from 'src/domain/entities/conta.entity';
-import { ContaPoupanca } from 'src/domain/entities/conta.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Conta } from '../../domain/entities/conta.entity';
+import { ContaCorrente } from '../../domain/entities/contaCorrente.entity';
+import { ContaPoupanca } from '../../domain/entities/contaPoupanca.entity';
 import { ClientesService } from './cliente.service';
+import { Cliente } from '../../domain/entities/cliente.entity';
+import { TipoConta } from '../../domain/enums/tipoConta.enum';
 
 @Injectable()
 export class ContasService {
-    constructor(private readonly clientesService: ClientesService) { }
+  constructor(
+    @InjectRepository(Conta)
+    private readonly contaRepository: Repository<Conta>,
+    private readonly clientesService: ClientesService
+  ) {}
 
-    criarConta(clienteId: number, tipo: 'corrente' | 'poupanca'): Conta {
-        const cliente = this.clientesService.buscarClientePorId(clienteId);
-        if (!cliente) throw new BadRequestException('Cliente não encontrado');
+  async criarConta(clienteId: string, tipo: TipoConta): Promise<Conta> {
+    const cliente = await this.clientesService.buscarClientePorId(clienteId);
+    if (!cliente) throw new BadRequestException('Cliente não encontrado');
 
-        let conta: Conta;
-        if (tipo === 'corrente') {
-            if (cliente.rendaSalarial < 500) throw new BadRequestException('Renda insuficiente para abrir conta corrente');
-            conta = new ContaCorrente(clienteId, cliente);
-        } else {
-            conta = new ContaPoupanca(clienteId, cliente);
-        }
+    let conta: Conta;
+    const numeroConta = Math.floor(Math.random() * 1000000); // Gerar número aleatório para a conta
 
-        cliente.contas.push(conta);
-        return conta;
+    if (tipo === TipoConta.Corrente) {
+      if (cliente.rendaSalarial < 500) throw new BadRequestException('Renda insuficiente para abrir conta corrente');
+      conta = new ContaCorrente(numeroConta, cliente);
+    } else {
+      conta = new ContaPoupanca(numeroConta, cliente);
     }
 
-    depositar(clienteId: number, contaNumero: number, valor: number): void {
-        const conta = this.buscarConta(clienteId, contaNumero);
-        conta.depositar(valor);
-    }
+    cliente.contas.push(conta);
+    await this.contaRepository.save(conta);
+    return conta;
+  }
 
-    sacar(clienteId: number, contaNumero: number, valor: number): void {
-        const conta = this.buscarConta(clienteId, contaNumero);
-        conta.sacar(valor);
-    }
+  async depositar(clienteId: string, contaNumero: number, valor: number): Promise<void> {
+    const conta = await this.buscarConta(clienteId, contaNumero);
+    conta.depositar(valor);
+    await this.contaRepository.save(conta);
+  }
 
-    transferir(clienteId: number, contaNumero: number, valor: number, contaDestinoId: number, contaDestinoNumero: number): void {
-        const conta = this.buscarConta(clienteId, contaNumero);
-        const contaDestino = this.buscarConta(contaDestinoId, contaDestinoNumero);
-        conta.transferir(valor, contaDestino);
-    }
+  async sacar(clienteId: string, contaNumero: number, valor: number): Promise<void> {
+    const conta = await this.buscarConta(clienteId, contaNumero);
+    conta.sacar(valor);
+    await this.contaRepository.save(conta);
+  }
 
-    buscarConta(clienteId: number, contaNumero: number): Conta {
-        const cliente = this.clientesService.buscarClientePorId(clienteId);
-        if (!cliente) throw new BadRequestException('Cliente não encontrado');
+  async transferir(clienteId: string, contaNumero: number, valor: number, contaDestinoNumero: number): Promise<void> {
+    const conta = await this.buscarConta(clienteId, contaNumero);
+    const contaDestino = await this.buscarConta(clienteId, contaDestinoNumero);
+    conta.transferir(valor, contaDestino);
+    await this.contaRepository.save(conta);
+    await this.contaRepository.save(contaDestino);
+  }
 
-        const conta = cliente.contas.find(conta => conta.numero === contaNumero);
-        if (!conta) throw new BadRequestException('Conta não encontrada');
+  public async buscarConta(clienteId: string, contaNumero: number): Promise<Conta> {
+    const cliente = await this.clientesService.buscarClientePorId(clienteId);
+    if (!cliente) throw new BadRequestException('Cliente não encontrado');
 
-        return conta;
-    }
+    const conta = cliente.contas.find(conta => conta.numero === contaNumero);
+    if (!conta) throw new BadRequestException('Conta não encontrada');
+
+    return conta;
+  }
 }

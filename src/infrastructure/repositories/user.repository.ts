@@ -1,41 +1,33 @@
-//import { Injectable } from "@nestjs/common";
-/*import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { User } from
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Cliente } from 'src/domain/entities/cliente.entity';
 
-    @Injectable()
-    export class UserRepository implements IUserRepository {
-        constructor( // fazendo a injeção dentro do construtor
-            @InjectRepository(User)
-            private readonly userRepository: Repository<User>,
-        ) { }
+@Injectable()
+export class ClientesService {
+  constructor(
+    @InjectRepository(Cliente)
+    private readonly clienteRepository: Repository<Cliente>,
+  ) {}
 
-        // o método sendo assíncrono será uma promessa e retorna uma lista
-        // Métodos do TypeORM
-        async findAll(): Promise<User[]> {
-            // SELECT * FROM users;
-            return await this.userRepository.find(); // método find
-        }
+  async criarCliente(nome: string, endereco: string, telefone: string, rendaSalarial: number): Promise<Cliente> {
+    const novoCliente = this.clienteRepository.create({ nome, endereco, telefone, rendaSalarial });
+    return this.clienteRepository.save(novoCliente);
+  }
 
-        async findById(id: string): Promise<User | null> {
-            // SELECT * FROM users WHERE id: ?;
-            return this.userRepository.findOne({
-                where: { id },
-                relations: ['address'],
-            });
-        }
+  async buscarClientePorId(id: string): Promise<Cliente | undefined> {
+    return this.findOne({ where: { id } });
+  }
+  
+    findOne(arg0: { where: { id: string; }; }): Cliente | PromiseLike<Cliente> {
+        throw new Error('Method not implemented.');
+    }
 
-        async save(user: User): Promise<User> { // entidade do tipo user
-            // INSERT INTO
-            return await this.userRepository.save(user); // quando salvar no banco vai salvar com uuid
-        }
+  async listarClientes(): Promise<Cliente[]> {
+    return this.clienteRepository.find();
+  }
 
-        async listUsers(): Promise<User[]> {
-            return await this.userRepository.findAll();
-        }
-
-        async delete(id: string): Promise<boolean> {
-            const result = await this.userRepository.delete(id);
-            return result.affected > 0;
-        }
-    }*/
+  async removerCliente(id: string): Promise<void> {
+    await this.clienteRepository.delete(id);
+  }
+}

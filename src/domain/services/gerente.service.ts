@@ -1,61 +1,70 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { Gerente } from 'src/domain/entities/gerente.entity';
-import { Cliente } from 'src/domain/entities/cliente.entity';
-import { ConcreteContaFactory, Conta } from 'src/domain/entities/conta.entity';
-import { TipoConta } from 'src/domain/enums/tipoConta.enum';
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Gerente } from '../../domain/entities/gerente.entity';
+import { Cliente } from '../../domain/entities/cliente.entity';
+import { Conta } from '../../domain/entities/conta.entity';
+import { TipoConta } from '../../domain/enums/tipoConta.enum';
+import { ConcreteContaFactory } from '../factories/contaFactory';
+//import { ConcreteContaFactory } from '.src/domain/entities/conta.entity'; // Ajuste o caminho conforme a estrutura do seu projeto
 
 @Injectable()
 export class GerentesService {
-    private gerentes: Gerente[] = [];
+  constructor(
+    @InjectRepository(Gerente)
+    private readonly gerenteRepository: Repository<Gerente>,
+    @InjectRepository(Cliente)
+    private readonly clienteRepository: Repository<Cliente>
+  ) {}
 
-    criarGerente(nome: string, id: number): Gerente {
-        const gerente = new Gerente(nome, id);
-        this.gerentes.push(gerente);
-        return gerente;
-    }
+  async criarGerente(nome: string): Promise<Gerente> {
+    const gerente = this.gerenteRepository.create({ nome });
+    return this.gerenteRepository.save(gerente);
+  }
 
-    buscarGerentePorId(id: number): Gerente {
-        return this.gerentes.find(gerente => gerente.id === id);
-    }
+  async buscarGerentePorId(id: string): Promise<Gerente> {
+    return this.gerenteRepository.findOne({ where: { id } });
+  }
 
-    private buscarCliente(gerenteId: number, clienteId: number): Cliente {
-        const gerente = this.buscarGerentePorId(gerenteId);
-        const cliente = gerente.clientes.find(cliente => cliente.id === clienteId);
-        if (!cliente) throw new BadRequestException('Cliente não encontrado');
-        return cliente;
-    }
+  private async buscarCliente(gerenteId: string, clienteId: string): Promise<Cliente> {
+    const gerente = await this.buscarGerentePorId(gerenteId);
+    const cliente = gerente.clientes.find(cliente => cliente.id === clienteId);
+    if (!cliente) throw new BadRequestException('Cliente não encontrado');
+    return cliente;
+  }
 
-    adicionarCliente(gerenteId: number, cliente: Cliente): void {
-        const gerente = this.buscarGerentePorId(gerenteId);
-        gerente.adicionarCliente(cliente);
-    }
+  async adicionarCliente(gerenteId: string, cliente: Cliente): Promise<void> {
+    const gerente = await this.buscarGerentePorId(gerenteId);
+    gerente.adicionarCliente(cliente);
+    await this.gerenteRepository.save(gerente);
+  }
 
-    removerCliente(gerenteId: number, clienteId: number): void {
-        const cliente = this.buscarCliente(gerenteId, clienteId);
-        const gerente = this.buscarGerentePorId(gerenteId);
-        gerente.removerCliente(clienteId);
-    }
+  async removerCliente(gerenteId: string, clienteId: string): Promise<void> {
+    const cliente = await this.buscarCliente(gerenteId, clienteId);
+    const gerente = await this.buscarGerentePorId(gerenteId);
+    gerente.removerCliente(clienteId);
+    await this.gerenteRepository.save(gerente);
+  }
 
-    abrirConta(gerenteId: number, tipo: TipoConta, clienteId: number): Conta {
-        const cliente = this.buscarCliente(gerenteId, clienteId);
-        const factory = new ConcreteContaFactory();
-        const novaConta = factory.criarConta(tipo, cliente);
-        if (!(novaConta instanceof Conta)) {
-            throw new Error('Erro: O objeto criado não é uma instância de Conta.');
-        }
-        cliente.contas.push(novaConta);
-        return novaConta;
-    }
+  async abrirConta(gerenteId: string, tipo: TipoConta, clienteId: string): Promise<Conta> {
+    const cliente = await this.buscarCliente(gerenteId, clienteId);
+    const factory = new ConcreteContaFactory();
+    const novaConta = factory.criarConta(tipo, cliente);
+    cliente.contas.push(novaConta);
+    await this.clienteRepository.save(cliente);
+    return novaConta;
+  }
 
-    fecharConta(gerenteId: number, clienteId: number, contaNumero: number): void {
-        const cliente = this.buscarCliente(gerenteId, clienteId);
-        const gerente = this.buscarGerentePorId(gerenteId);
-        gerente.fecharConta(cliente, contaNumero);
-    }
+  async fecharConta(gerenteId: string, clienteId: string, contaNumero: number): Promise<void> {
+    const cliente = await this.buscarCliente(gerenteId, clienteId);
+    const gerente = await this.buscarGerentePorId(gerenteId);
+    gerente.fecharConta(cliente, contaNumero);
+    await this.gerenteRepository.save(gerente);
+  }
 
-    modificarTipoConta(gerenteId: number, clienteId: number, contaNumero: number, novoTipo: TipoConta): Conta {
-        const cliente = this.buscarCliente(gerenteId, clienteId);
-        const gerente = this.buscarGerentePorId(gerenteId);
-        return gerente.modificarTipoConta(cliente, contaNumero, novoTipo);
-    }
+  async modificarTipoConta(gerenteId: string, clienteId: string, contaNumero: number, novoTipo: TipoConta): Promise<Conta> {
+    const cliente = await this.buscarCliente(gerenteId, clienteId);
+    const gerente = await this.buscarGerentePorId(gerenteId);
+    return gerente.modificarTipoConta(cliente, contaNumero, novoTipo);
+  }
 }

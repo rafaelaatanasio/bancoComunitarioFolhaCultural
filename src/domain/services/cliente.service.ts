@@ -1,25 +1,31 @@
-import { Injectable } from '@nestjs/common';
-import { Cliente } from 'src/domain/entities/cliente.entity';
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Cliente } from '../../domain/entities/cliente.entity';
 
 @Injectable()
 export class ClientesService {
-    private clientes: Cliente[] = [];
+  constructor(
+    @InjectRepository(Cliente)
+    private readonly clienteRepository: Repository<Cliente>,
+  ) {}
 
-    criarCliente(nome: string, id: string, endereco: string, telefone: string, rendaSalarial: number): Cliente {
-        const novoCliente: Cliente = new Cliente(nome, id, endereco, telefone, rendaSalarial);
-        this.clientes.push(novoCliente);
-        return novoCliente;
-    }
+  async criarCliente(nome: string, endereco: string, telefone: string, rendaSalarial: number): Promise<Cliente> {
+    const novoCliente = this.clienteRepository.create({ nome, endereco, telefone, rendaSalarial });
+    return this.clienteRepository.save(novoCliente);
+  }
 
-    buscarClientePorId(id: string): Cliente | undefined {
-        return this.clientes.find(cliente => cliente.id === id);
-    }
+  async buscarClientePorId(id: string): Promise<Cliente | undefined> {
+    return this.clienteRepository.findOne({ where: { id } });
+  }
 
-    listarClientes(): Cliente[] {
-        return this.clientes;
-    }
+  async listarClientes(): Promise<Cliente[]> {
+    return this.clienteRepository.find();
+  }
 
-    removerCliente(id: string): void {
-        this.clientes = this.clientes.filter(cliente => cliente.id !== id);
-    }
+  async removerCliente(id: string): Promise<void> {
+    const cliente = await this.buscarClientePorId(id);
+    if (!cliente) throw new BadRequestException('Cliente não encontrado');
+    await this.clienteRepository.remove(cliente);
+  }
 }
